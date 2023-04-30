@@ -5,7 +5,10 @@
 #include "framework.h"
 #include "Project1Classic.h"
 #include <iostream>
-#include <string>
+#include <fstream>
+#include <random>
+
+using namespace std;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -15,10 +18,6 @@
 // Единственный объект приложения
 
 CWinApp theApp;
-
-using namespace std;
-
-
 void EnablePrintfAtMFC()
 {
   if (AttachConsole(ATTACH_PARENT_PROCESS))
@@ -32,6 +31,7 @@ void EnablePrintfAtMFC()
 
 int main()
 {
+
     EnablePrintfAtMFC();
     int nRetCode = 0;
     wprintf(L"start ok!\n");
@@ -56,33 +56,52 @@ int main()
         nRetCode = 1;
     }
  
+
+    unsigned int spl;
+    unsigned char spline[6200];
+    ifstream file4("Real_array_Fout.txt");
+    if (file4.is_open()) // вызов метода is_open()
+    {
+      for (int i = 0; i < 6200; i++)
+      {
+        file4 >> spl;
+        spline[i] = spl;
+      }
+    }
+    //       cout <<  (int)spline[i] << "   " <<i << endl;
+    else
+    {
+      cout << "File no open! - file4" << endl;
+    }
+    file4.close();
+    int k = 0;
   
+    unsigned char send[1035];
+    unsigned char sendk[1035];
+    for (int i = 0; i < 6200; i+=6)
+    {
+      send[k++] = spline[i];
+    }
+    cout << "k = " << k << endl;
+    random_device dev;
+    mt19937 rng(dev());
 
-    CString Buffer;
-    Buffer.Format(_T("START SOCKET SE ND OK! %d\n"), 0);
-    std::string st("START SOCKET SEND OK! ");
-    std::cout << st << endl;
-
-    size_t buflen = st.length();
-
+    uniform_int_distribution<std::mt19937::result_type> dist6(1, 6); // distribution in range [1, 1600]
+    
     AfxSocketInit(NULL);
     CSocket echoClient;
-    if (echoClient.Create(0, SOCK_DGRAM, NULL) == 0) 
+    if (echoClient.Create(0, SOCK_DGRAM, NULL) == 0)
     {
       AfxMessageBox(L"Create() failed", MB_OK | MB_ICONSTOP);
     }
     int i = 0;
-    std::string si = std::to_string(i);
-    std::string sk;
-    while (i < 25)
+    while (i < 1250)
     {
-      i++;
-      si = std::to_string(i);
-      sk = st + si;
-      std::cout << sk <<endl;
-      buflen = sk.length();
-      if (echoClient.SendTo(sk.c_str(), buflen, 514, (LPCTSTR)L"localhost", 0) != buflen)
-          AfxMessageBox(L"SendTo() sent a different number of bytes than expected", MB_OK | MB_ICONSTOP);
+      for (k = 0; k < 1024; k++)
+        sendk[k] = send[k] + dist6(rng);
+      cout << i++ << endl;
+      if (echoClient.SendTo((const void*)sendk, 1024, 514, (LPCTSTR)L"localhost", 0) != 1024)
+        AfxMessageBox(L"SendTo() sent a different number of bytes than expected", MB_OK | MB_ICONSTOP);
       Sleep(1000);
     }
     echoClient.Close();

@@ -33,7 +33,7 @@ int main()
 {
 
     EnablePrintfAtMFC();
-    int nRetCode = 0;
+    int nRetCode = 0; 
     wprintf(L"start ok!\n");
     HMODULE hModule = ::GetModuleHandle(nullptr);
     if (hModule != nullptr)

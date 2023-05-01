@@ -86,7 +86,7 @@ int main()
     random_device dev;
     mt19937 rng(dev());
 
-    uniform_int_distribution<std::mt19937::result_type> dist6(1, 6); // distribution in range [1, 1600]
+    uniform_int_distribution<std::mt19937::result_type> dist2(1, 2); // distribution in range [1, 1600]
     
     AfxSocketInit(NULL);
     CSocket echoClient;
@@ -98,11 +98,11 @@ int main()
     while (i < 1250)
     {
       for (k = 0; k < 1024; k++)
-        sendk[k] = send[k] + dist6(rng);
+        sendk[k] = send[k] + dist2(rng);
       cout << i++ << endl;
       if (echoClient.SendTo((const void*)sendk, 1024, 514, (LPCTSTR)L"localhost", 0) != 1024)
         AfxMessageBox(L"SendTo() sent a different number of bytes than expected", MB_OK | MB_ICONSTOP);
-      Sleep(1000);
+      Sleep(200);
     }
     echoClient.Close();
     std::cout << "Without errors: GetModuleHandle" << endl;

@@ -95,11 +95,11 @@ int main()
       AfxMessageBox(L"Create() failed", MB_OK | MB_ICONSTOP);
     }
     int i = 0;
-    while (i < 1250)
+    while (i < 6250)
     {
       for (k = 0; k < 256; k++)
         sendk[k] = send[k] + dist2(rng);
-      cout << i++ << endl;
+      i++;
       if (echoClient.SendTo((const void*)sendk, 256, 514, (LPCTSTR)L"localhost", 0) != 256)
         AfxMessageBox(L"SendTo() sent a different number of bytes than expected", MB_OK | MB_ICONSTOP);
       Sleep(100);

@@ -78,7 +78,7 @@ int main()
   
     unsigned char send[1035];
     unsigned char sendk[1035];
-    for (int i = 0; i < 6200; i+=6)
+    for (int i = 0; i < 6200; i+=24)
     {
       send[k++] = spline[i];
     }
@@ -97,12 +97,12 @@ int main()
     int i = 0;
     while (i < 1250)
     {
-      for (k = 0; k < 1024; k++)
+      for (k = 0; k < 256; k++)
         sendk[k] = send[k] + dist2(rng);
       cout << i++ << endl;
-      if (echoClient.SendTo((const void*)sendk, 1024, 514, (LPCTSTR)L"localhost", 0) != 1024)
+      if (echoClient.SendTo((const void*)sendk, 256, 514, (LPCTSTR)L"localhost", 0) != 256)
         AfxMessageBox(L"SendTo() sent a different number of bytes than expected", MB_OK | MB_ICONSTOP);
-      Sleep(200);
+      Sleep(100);
     }
     echoClient.Close();
     std::cout << "Without errors: GetModuleHandle" << endl;
